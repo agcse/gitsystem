@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # This script adds new bare repository to the server
+# Usage: ./make_bare_repo.sh REPO_NAME
 
 REPO_NAME=$1
 REPO_PATH=/var/www/html/git/$REPO_NAME
