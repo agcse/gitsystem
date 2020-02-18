@@ -45,6 +45,8 @@ cd ~/git/
 make GITWEB_PROJECTROOT="/var/www/html/git" prefix=/usr gitweb
 sudo cp -Rf gitweb /var/www/
 sudo chown -R www-data:www-data /var/www/gitweb/
+# add GitWeb to server sub-url
+cat replace_000-default.conf | sudo tee /etc/apache2/sites-available/000-default.conf
 
 # reload apache2 server
 sudo service apache2 reload
