@@ -10,7 +10,7 @@
 
 # update and install basic software
 sudo apt update -y
-sudo apt install git -y
+sudo apt install git vim -y
 sudo apt install apache2 apache2-utils -y
 sudo a2enmod cgi alias env
 
@@ -35,18 +35,23 @@ sudo systemctl enable git-daemon
 sudo systemctl start git-daemon
 
 # enable HTTP for apache server
-cat $CURR_FLDR/add_to_apache2.conf >> /etc/apache2/apache2.conf
+cat add_to_apache2.conf | sudo tee -a /etc/apache2/apache2.conf
 echo "do: 'htpasswd -c $GIT_FLDR/.htpasswd <user>' to add new user to HTTP valid users"
 
 # add GitWeb
 cd ~
 git clone git://git.kernel.org/pub/scm/git/git.git
-cd git/
+cd ~/git/
 make GITWEB_PROJECTROOT="/var/www/html/git" prefix=/usr gitweb
 sudo cp -Rf gitweb /var/www/
+sudo chown -R www-data:www-data /var/www/gitweb/
 
 # reload apache2 server
 sudo service apache2 reload
+
+# some additional stuff for Git:
+git config --global http.receivepack true
+
 
 echo "  for smart HTTP do:"
 echo "'htpasswd -c $GIT_FLDR/.htpasswd <user>'"
