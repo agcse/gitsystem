@@ -35,7 +35,7 @@ sudo systemctl enable git-daemon
 sudo systemctl start git-daemon
 
 # enable HTTP for apache server
-cat add_to_apache2.conf | sudo tee -a /etc/apache2/apache2.conf
+cat $CURR_FLDR/add_to_apache2.conf | sudo tee -a /etc/apache2/apache2.conf
 
 # add GitWeb
 cd ~
@@ -45,11 +45,8 @@ make GITWEB_PROJECTROOT="/var/www/html/git" prefix=/usr gitweb
 sudo cp -Rf gitweb /var/www/
 sudo chown -R www-data:www-data /var/www/gitweb/
 
-# reload apache2 server
-sudo service apache2 reload
-
 # add GitWeb to server sub-url
-cat replace_000-default.conf | sudo tee /etc/apache2/sites-available/000-default.conf
+cat $CURR_FLDR/replace_000-default.conf | sudo tee /etc/apache2/sites-available/000-default.conf
 
 # reload apache2 server
 sudo service apache2 reload
