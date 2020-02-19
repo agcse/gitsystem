@@ -15,7 +15,8 @@ repo_tools/ - tools to aid with repositories on the server
 * You can fast start on Ubuntu server with the following:
 ```sh
 sudo apt-get install git
-cd <gitsystem>/server_bootstrap/
+git clone https://github.com/agcse/gitsystem.git
+cd gitsystem/server_bootstrap/
 ./setup_server.sh  # uses sudo inside
 ```
 * To enable smart HTTP you need "valid" users. In the current setting, you can add new user on the server via:
