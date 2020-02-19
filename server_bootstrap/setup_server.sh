@@ -54,6 +54,8 @@ sudo service apache2 reload
 # some additional stuff for Git:
 git config --global http.receivepack true
 
+# reload apache2 server
+sudo service apache2 reload
 
 echo "  for smart HTTP do:"
 echo "'htpasswd -c $GIT_FLDR/.htpasswd <user>'"
