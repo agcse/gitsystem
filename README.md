@@ -8,6 +8,7 @@ Repository of scripts and tools to deploy your own Git-based system.
 Tree:
 server_bootstrap/ - bootstrap scripts for the apache2 web server running git backend through smart HTTP/GIT protocols
 repo_tools/ - tools to aid with repositories on the server
+messaging/ - tools to aid with messaging between git servers
 ```
 
 ## Fast start
