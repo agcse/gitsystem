@@ -38,6 +38,50 @@ There are several ways to be able to clone repositories from the server:
 * Smart HTTP: `git clone http(s)://<server>/git/<repo>.git`
 * GIT: `git clone git://<server>/<repo>.git`
 
+## Kafka Server
+Following are the instructions to setup kafka server for nodes communication
+
+* Run intial_setup.sh in your home directory by 
+```sh
+. intial_setup.sh
+```
+* In config/server.properties uncomment and change
+```sh
+listeners=PLAINTEXT://<Machine ip adress>:9092
+
+advertised.listeners=PLAINTEXT://<Machine ip adress>:9092
+```
+* Assuming your kafkaserver folder is in home directory, change logs.dir in config/server.properties to
+```sh
+logs.dir = /home/<user name>/kafkaServer/kafka_2.12-2.4.0/kafka-logs
+```
+* Assuming your kafkaserver folder is in home directory, change dataDir in config/zookeeper.properties to
+```sh
+dataDir = /home/<user name>/kafkaServer/kafka_2.12-2.4.0/zookeeper
+```
+* In kafkaServer/kafka_2.12-2.4.0/ run 
+```sh
+start_zookeeper.sh to start zookeeper
+start_kafkaServer.sh to start kafkaServer
+```
+* After zookeeper and kafka server are running you can create the topic
+```sh
+bin/kafka-topics.sh --create --bootstrap-server <Machine_ip>:9092 --replication-factor 1 --partitions 1 --topic <topic>
+```
+* To check if topic is created
+```sh
+bin/kafka-topics.sh --list --bootstrap-server <Machine_ip>:9092
+```
+
+## Kafka Nodes
+
+* On each node we need kafka python 
+```sh
+//If pip is not installed
+sudo apt install python-pip
+pip install kafka-python
+```
+
 ## Notes
 
 Tested on local virtual machines; OS: Ubuntu 16.04 LTS 64-bit
