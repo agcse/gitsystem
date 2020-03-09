@@ -6,6 +6,8 @@ Script that fakes the sending of a repo-related message.
 
 import argparse
 import json
+from json import dumps
+from kafka import KafkaProducer
 
 
 def git_repo_name(s):
@@ -56,11 +58,11 @@ def parse_args():
 
 
 def interpret_as_new(args):
-    def make_git_ip(ip): return 'http://' + ip + '/git/'
+    def make_git_ip(ip): return 'git://' + ip
     message = {
         'type': args.command,
         'src': make_git_ip(args.ip),
-        'repo': args.repo_name
+        'repo_name': args.repo_name
     }
     return message
 
@@ -68,7 +70,7 @@ def interpret_as_new(args):
 def interpret_as_delete(args):
     message = {
         'type': args.command,
-        'repo': args.repo_name
+        'repo_name': args.repo_name
     }
     return message
 
@@ -76,7 +78,7 @@ def interpret_as_delete(args):
 def interpret_as_update(args):
     message = {
         'type': args.command,
-        'repo': args.repo_name
+        'repo_name': args.repo_name
     }
     return message
 
@@ -96,7 +98,17 @@ def serialize_command(args):
 def main():
     args = parse_args()
     serialized = serialize_command(args)
-    print('Serialized command message: ' + serialized)
+
+    #Change the ip to your kafka server ip
+    producer = KafkaProducer(bootstrap_servers=['10.0.2.6:9092'],
+                         value_serializer=lambda x: 
+                         dumps(x).encode('utf-8'))
+
+    #MAIN_NODE is the topic, Change it to the topic you created on kafka
+    data = {'msg' : serialized}
+    producer.send('MAIN_NODE', value=data)
+    print(data)
+
     return
 
 
