@@ -9,7 +9,5 @@
 REPO_NAME=$1
 REPO_PATH=/var/www/html/git/$REPO_NAME
 cd $REPO_PATH
-sudo git remote update
+git remote update
 cd - > /dev/null
-sudo chown -R git:www-data $REPO_PATH
-

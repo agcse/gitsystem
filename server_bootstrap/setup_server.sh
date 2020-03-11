@@ -23,11 +23,17 @@ CURR_FLDR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # create git folder
 sudo mkdir -p $GIT_FLDR
+sudo chown -R $(whoami):$(whoami) $GIT_FLDR
 
-# setup git user - TODO?
+# add git user
 sudo adduser git
-# ...
-sudo chown -R git:www-data $GIT_FLDR
+
+# add git and www-data to this user's group. this will enable git and www-data to access files
+# created by current user
+sudo usermod -a -G $(whoami) git
+sudo usermod -a -G $(whoami) www-data
+# add user to www-data group (for later stuff with creating repos through website)
+sudo usermod -a -G www-data $(whoami)
 
 # add git daemon
 sudo cp $CURR_FLDR/git-daemon.service /etc/systemd/system/git-daemon.service
