@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
 '''
-Script that fakes the sending of a repo-related message.
+Script that sends repo-related messages through Kafka.
 '''
 
 import argparse
 import json
 from json import dumps
-from kafka import KafkaProducer
 
 
 def git_repo_name(s):
@@ -29,6 +28,9 @@ def parse_args():
     """Parse command-line"""
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(help='Send message commands')
+    parser.add_argument(
+        '--test', help='Run script in "test" mode (only print serialized message)',
+        default=False, action='store_true')
 
     # add commands for each type of message
     # add new repo:
@@ -54,14 +56,25 @@ def parse_args():
         'repo_name', help='Name of the repository to update', type=git_repo_name)
     parser_update.set_defaults(command='UPDATE')
 
+    # change main server:
+    parser_chsrv = subparsers.add_parser(
+        'change_server', help='Send message that the main server must be changed')
+    parser_chsrv.add_argument(
+        'ip', help='IP address of a new main server')
+    parser_chsrv.set_defaults(command='CHANGE_SERVER')
+
     return parser.parse_args()
 
 
+def make_git_url(ip):
+    """Make Git URL from IP address"""
+    return 'git://' + ip
+
+
 def interpret_as_new(args):
-    def make_git_ip(ip): return 'git://' + ip
     message = {
         'type': args.command,
-        'src': make_git_ip(args.ip),
+        'src': make_git_url(args.ip),
         'repo_name': args.repo_name
     }
     return message
@@ -83,6 +96,14 @@ def interpret_as_update(args):
     return message
 
 
+def interpret_as_change_server(args):
+    message = {
+        'type': args.command,
+        'src': make_git_url(args.ip)
+    }
+    return message
+
+
 def serialize_command(args):
     def wrap(s): return json.dumps(s)  # json based serializer
 
@@ -92,22 +113,31 @@ def serialize_command(args):
         return wrap(interpret_as_delete(args))
     if args.command == 'UPDATE':
         return wrap(interpret_as_update(args))
+    if args.command == 'CHANGE_SERVER':
+        return wrap(interpret_as_change_server(args))
     return None
 
 
 def main():
     args = parse_args()
     serialized = serialize_command(args)
-
-    #Change the ip to your kafka server ip
-    producer = KafkaProducer(bootstrap_servers=['10.0.2.6:9092'],
-                         value_serializer=lambda x: 
-                         dumps(x).encode('utf-8'))
-
-    #MAIN_NODE is the topic, Change it to the topic you created on kafka
-    data = {'msg' : serialized}
-    producer.send('MAIN_NODE', value=data)
+    data = {'msg': serialized}
     print(data)
+
+    # do not send message in case of --test option
+    if args.test:
+        return
+
+    from kafka import KafkaProducer
+
+    # Change the ip to your kafka server ip
+    producer = KafkaProducer(bootstrap_servers=['10.0.2.6:9092'],
+                             value_serializer=lambda x:
+                             dumps(x).encode('utf-8'))
+
+    # MAIN_NODE is the topic, Change it to the topic you created on
+    # kafka
+    producer.send('MAIN_NODE', value=data)
 
     return
 
