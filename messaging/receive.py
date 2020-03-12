@@ -47,6 +47,11 @@ def interpret_as_delete(args):
         'type': args['type'],
         'repo_name': args['repo_name']
     }
+
+    subprocess.check_call(
+        "rm -rf /var/www/html/git/%s" %
+        (str(command['repo_name'])), shell=True)
+
     return command
 
 
