@@ -71,6 +71,16 @@ sudo cp -r $CURR_FLDR/messaging /var/www/git_tools/messaging/
 sudo cp -r $CURR_FLDR/server_tools /var/www/git_tools/server_tools/
 sudo chown -R $(whoami):$(whoami) /var/www/git_tools/
 
+# delete index.html and copy index.php to web server
+sudo rm -f /var/www/html/index.html
+sudo cp $CURR_FLDR/index.php /var/www/html/index.php
+sudo chown -R $(whoami):$(whoami) /var/www/html/index.php
+
+# change permissions of html folder and add gid bit:
+sudo chgrp -R www-data /var/www/html/git/
+sudo chmod g+s /var/www/html/git/
+sudo chmod g+w /var/www/html/git/
+
 # install python, python-pip and kafka-python
 sudo apt install python python-pip -y
 sudo pip install kafka-python

@@ -10,6 +10,6 @@ CURR_FLDR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 REPO_NAME=$1
 
 # make bare repo
-$CURR_FLDR/../repo_tools/make_bare_repo.sh $REPO_NAME.git
+$CURR_FLDR/../repo_tools/make_bare_repo.sh $REPO_NAME
 # send message
-python $CURR_FLDR/../messaging/send.py new $(hosname -I) $REPO_NAME.git
+python $CURR_FLDR/../messaging/send.py new $(hosname -I) $REPO_NAME
