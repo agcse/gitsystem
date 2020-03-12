@@ -137,7 +137,7 @@ def deserialize_command(args):
         return interpret_as_update(d)
     if command_type == 'CHANGE_SERVER':
         return interpret_as_change_server(d)
-	if command_type == 'UPDATE_PWDS':
+    if command_type == 'UPDATE_PWDS':
         return interpret_as_update_pwds(d)
 
     return None
@@ -155,16 +155,19 @@ def main():
         value_deserializer=lambda x: loads(x.decode('utf-8')))
 
     for message in consumer:
-        cMsg = message.value
-        deserialized = deserialize_command(cMsg['msg'])
-        print('Deserialized command message: ' + str(deserialized))
-
+        try:
+            cMsg = message.value
+            deserialized = deserialize_command(cMsg['msg'])
+            print('Deserialized command message: ' + str(deserialized))
+        except Exception:
+            # TODO: handle gracefully
+            print('Error happened')
     '''
     args = parse_args()
     deserialized = deserialize_command(args.message)
     print('Deserialized command message: ' + str(deserialized))
     return
-	'''
+    '''
 
 
 if __name__ == '__main__':
