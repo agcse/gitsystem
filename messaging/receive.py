@@ -13,7 +13,7 @@ import sys
 from kafka import KafkaConsumer
 
 
-SUPPORTED_COMMANDS = ['NEW', 'DELETE', 'UPDATE', 'CHANGE_SERVER']
+SUPPORTED_COMMANDS = ['NEW', 'DELETE', 'UPDATE', 'CHANGE_SERVER', 'UPDATE_PWDS']
 
 
 def parse_args():
@@ -112,6 +112,15 @@ def interpret_as_change_server(args):
 
     return command
 
+def interpret_as_update_pwds(args):
+    command = {
+        'content': args['content'],
+    }
+
+    subprocess.check_call('echo %s > /var/www/html/git/.htpasswd' % str(command['content']),
+        shell=True)
+    return command
+
 
 def deserialize_command(args):
     d = json.loads(args)
@@ -128,6 +137,8 @@ def deserialize_command(args):
         return interpret_as_update(d)
     if command_type == 'CHANGE_SERVER':
         return interpret_as_change_server(d)
+	if command_type == 'UPDATE_PWDS':
+        return interpret_as_update_pwds(d)
 
     return None
 

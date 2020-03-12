@@ -63,6 +63,11 @@ def parse_args():
         'ip', help='IP address of a new main server')
     parser_chsrv.set_defaults(command='CHANGE_SERVER')
 
+    # change main server:
+    parser_upd_pwds = subparsers.add_parser(
+        'update_pwds', help='Send message that the .htpasswd file needs to be updated')
+    parser_upd_pwds.set_defaults(command='UPDATE_PWDS')
+
     return parser.parse_args()
 
 
@@ -104,6 +109,17 @@ def interpret_as_change_server(args):
     return message
 
 
+def interpret_as_update_pwds(args):
+    htpasswd_content = None
+    with open('/var/www/html/git/.htpasswd', 'r') as pwd_file:
+        htpasswd_content = pwd_file.readlines()
+
+    message = {
+        'content': htpasswd_content
+    }
+    return message
+
+
 def serialize_command(args):
     def wrap(s): return json.dumps(s)  # json based serializer
 
@@ -115,6 +131,8 @@ def serialize_command(args):
         return wrap(interpret_as_update(args))
     if args.command == 'CHANGE_SERVER':
         return wrap(interpret_as_change_server(args))
+    if args.command == 'UPDATE_PWDS':
+        return wrap(interpret_as_update_pwds(args))
     return None
 
 
