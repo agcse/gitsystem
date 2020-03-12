@@ -9,6 +9,8 @@ Tree:
 server_bootstrap/ - bootstrap scripts for the apache2 web server running git backend through smart HTTP/GIT protocols
 repo_tools/ - tools to aid with repositories on the server
 messaging/ - tools to aid with messaging between git servers
+server_tools/ - tools that the web server uses
+kafka_setup/ - setup and startup scripts for Kafka server
 ```
 
 ## Fast start
