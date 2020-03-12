@@ -129,7 +129,7 @@ def interpret_as_update_pwds(args):
     }
 
     # update .htpasswd line by line:
-    with open('/var/www/html/.htpasswd', 'w') as pwd_file:
+    with open('/var/www/html/git/.htpasswd', 'w') as pwd_file:
         for line in command['content'].split('\\n'):
             line = line.strip()
             if not line:
