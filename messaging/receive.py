@@ -124,16 +124,19 @@ def interpret_as_change_server(args):
 
 def interpret_as_update_pwds(args):
     command = {
+        'type': args['type'],
         'content': args['content'],
     }
 
-    # clean password file
-    subprocess.check_call('> /var/www/html/git/.htpasswd')
-
     # update .htpasswd line by line:
-    for line in command['content'].split('\\n'):
-        subprocess.check_call('echo %s >> /var/www/html/git/.htpasswd' % line,
-                              shell=True)
+    with open('/var/www/html/.htpasswd', 'w') as pwd_file:
+        for line in command['content'].split('\\n'):
+            line = line.strip()
+            if not line:
+                continue
+            pwd_file.write(line)
+            pwd_file.write('\n')
+
     return command
 
 
