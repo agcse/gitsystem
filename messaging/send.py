@@ -115,6 +115,7 @@ def interpret_as_update_pwds(args):
         htpasswd_content = pwd_file.readlines()
 
     message = {
+        'type': args.command,
         'content': htpasswd_content
     }
     return message
