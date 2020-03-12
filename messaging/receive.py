@@ -159,15 +159,6 @@ def deserialize_command(args):
 
 
 def main():
-    # if there is input, then run this script in test mode:
-    if len(sys.argv) > 1:
-        cMsg = loads(sys.argv[1])
-        deserialized = deserialize_command(cMsg['msg'])
-        print('Deserialized command message: ' +
-              str(deserialized))
-        return
-
-    # if there is no input, then run as Kafka client:
     from kafka import KafkaConsumer
     # Change the ip to your kafka server ip adress
     # Change MAIN_NODE to the topic you created on kafka server
