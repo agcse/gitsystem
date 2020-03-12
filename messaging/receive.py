@@ -179,9 +179,9 @@ def main():
             deserialized = deserialize_command(cMsg['msg'])
             print('Deserialized command message: ' +
                   str(deserialized))
-        except Exception:
-            # TODO: handle gracefully
-            print('Error happened')
+        except Exception as e:
+            print('Error happened:')
+            print(str(e))
 
 
 if __name__ == '__main__':
