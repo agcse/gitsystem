@@ -64,6 +64,17 @@ git config --global http.receivepack true
 # reload apache2 server
 sudo service apache2 reload
 
+# copy gitsystem local files to web server
+sudo mkdir -p /var/www/git_tools/
+sudo cp -r $CURR_FLDR/repo_tools /var/www/git_tools/repo_tools/
+sudo cp -r $CURR_FLDR/messaging /var/www/git_tools/messaging/
+sudo cp -r $CURR_FLDR/server_tools /var/www/git_tools/server_tools/
+sudo chown -R $(whoami):$(whoami) /var/www/git_tools/
+
+# install python, python-pip and kafka-python
+sudo apt install python python-pip -y
+sudo pip install kafka-python
+
 echo "  for smart HTTP do:"
 echo "'htpasswd -c $GIT_FLDR/.htpasswd <user>'"
 echo "  to add new user to HTTP valid users"
