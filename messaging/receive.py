@@ -46,7 +46,6 @@ def interpret_as_new(args):
 
 
 def interpret_as_delete(args):
-    # TODO: add actual logic
     command = {
         'type': args['type'],
         'repo_name': args['repo_name']
@@ -115,7 +114,6 @@ def interpret_as_change_server(args):
                     str(repo), str(command['src'])),
                 shell=True)
 
-    # TODO: is this good enough or we need to stop Kafka client?
     if i_am_new_main_server:
         sys.exit(0)
 
