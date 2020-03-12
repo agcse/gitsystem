@@ -24,7 +24,7 @@ cd gitsystem/server_bootstrap/
 ```
 * To enable smart HTTP you need "valid" users. In the current setting, you can add new user on the server via:
 ```sh
-sudo htpasswd -c /var/www/html/git/.htpasswd <user>
+htpasswd -c /var/www/html/git/.htpasswd <user>
 ```
 * GIT protocol (clone-only) is enabled by the setup routine.
 * After a successful setup, you could see GitWeb app running on `http(s)://<server>/gitweb` url
