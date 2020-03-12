@@ -9,10 +9,11 @@
 #
 
 # update and install basic software
+sudo add-apt-repository ppa:ondrej/php
 sudo apt update -y
 sudo apt install git vim -y
-sudo apt install apache2 apache2-utils -y
-sudo a2enmod cgi alias env
+sudo apt install apache2 apache2-utils libapache2-mod-php -y
+sudo a2enmod cgi alias env php*
 
 # initially start apache server
 sudo service apache2 start
