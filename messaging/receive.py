@@ -103,15 +103,16 @@ def interpret_as_change_server(args):
         'type': args['type'],
         'src': args['src']
     }
+
     for repo in [e for e in os.listdir(
-            '/var/www/html/git/') if e.endswith('.git') and os.path.isdir(e)]:
+            '/var/www/html/git/') if e.endswith('.git')]:
         if i_am_new_main_server:
             subprocess.check_call(
                 "../repo_tools/remove_remote_origin.sh %s" % (str(repo)), shell=True)
         else:
             subprocess.check_call(
                 "../repo_tools/update_remote_origin.sh %s %s" % (
-                    str(repo), str(command['src'])),
+                    str(repo), str(command['src'] + '/' + str(repo))),
                 shell=True)
 
     if i_am_new_main_server:
@@ -160,7 +161,7 @@ def deserialize_command(args):
 
 
 def main():
-    from kafka import KafkaConsumer
+    from kafka import KafkaConsumer    
     # Change the ip to your kafka server ip adress
     # Change MAIN_NODE to the topic you created on kafka server
     consumer = KafkaConsumer(

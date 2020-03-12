@@ -11,5 +11,7 @@ REPO_NAME=$1
 NEW_ORIGIN=$2
 REPO_PATH=/var/www/html/git/$REPO_NAME
 cd $REPO_PATH
+#TODO git remote should not be here but it is. usage: main node demoted to replica
+git remote add origin git://non-existent.com/non_existent.git
 git remote set-url origin $NEW_ORIGIN
 cd - > /dev/null
