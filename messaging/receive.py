@@ -13,7 +13,12 @@ import sys
 from kafka import KafkaConsumer
 
 
-SUPPORTED_COMMANDS = ['NEW', 'DELETE', 'UPDATE', 'CHANGE_SERVER', 'UPDATE_PWDS']
+SUPPORTED_COMMANDS = [
+    'NEW',
+    'DELETE',
+    'UPDATE',
+    'CHANGE_SERVER',
+    'UPDATE_PWDS']
 
 
 def parse_args():
@@ -117,13 +122,19 @@ def interpret_as_change_server(args):
 
     return command
 
+
 def interpret_as_update_pwds(args):
     command = {
         'content': args['content'],
     }
 
-    subprocess.check_call('echo %s > /var/www/html/git/.htpasswd' % str(command['content']),
-        shell=True)
+    # clean password file
+    subprocess.check_call('> /var/www/html/git/.htpasswd')
+
+    # update .htpasswd line by line:
+    for line in command['content'].split('\\n'):
+        subprocess.check_call('echo %s >> /var/www/html/git/.htpasswd' % line,
+                              shell=True)
     return command
 
 
@@ -163,7 +174,8 @@ def main():
         try:
             cMsg = message.value
             deserialized = deserialize_command(cMsg['msg'])
-            print('Deserialized command message: ' + str(deserialized))
+            print('Deserialized command message: ' +
+                  str(deserialized))
         except Exception:
             # TODO: handle gracefully
             print('Error happened')

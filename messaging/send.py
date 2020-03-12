@@ -112,7 +112,7 @@ def interpret_as_change_server(args):
 def interpret_as_update_pwds(args):
     htpasswd_content = None
     with open('/var/www/html/git/.htpasswd', 'r') as pwd_file:
-        htpasswd_content = pwd_file.readlines()
+        htpasswd_content = pwd_file.read()
 
     message = {
         'type': args.command,
