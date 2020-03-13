@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Post-receive hook for bare repository that sends the update message over Kafka
+
+CURR_FLDR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+REPO_NAME=$(basename $(realpath $CURR_FLDR/../))
+
+/var/www/git_tools/messaging/send.py update $REPO_NAME
+
