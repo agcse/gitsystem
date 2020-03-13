@@ -24,7 +24,6 @@ CURR_FLDR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # create git folder
 sudo mkdir -p $GIT_FLDR
-sudo chown -R $(whoami):$(whoami) $GIT_FLDR
 
 # add git user
 sudo adduser git
@@ -66,27 +65,31 @@ sudo service apache2 reload
 
 # copy gitsystem local files to web server
 sudo mkdir -p /var/www/git_tools/
-sudo cp -r $CURR_FLDR/repo_tools /var/www/git_tools/repo_tools/
-sudo cp -r $CURR_FLDR/messaging /var/www/git_tools/messaging/
-sudo cp -r $CURR_FLDR/server_tools /var/www/git_tools/server_tools/
+sudo cp -r $CURR_FLDR/../repo_tools /var/www/git_tools/repo_tools/
+sudo cp -r $CURR_FLDR/../messaging /var/www/git_tools/messaging/
+sudo cp -r $CURR_FLDR/../server_tools /var/www/git_tools/server_tools/
 sudo chown -R $(whoami):$(whoami) /var/www/git_tools/
+
+# create .htpasswd
+sudo touch /var/www/html/git/.htpasswd
+sudo chmod 660 /var/www/html/git/.htpasswd
 
 # delete index.html and copy index.php to web server
 sudo rm -f /var/www/html/index.html
 sudo cp $CURR_FLDR/index.php /var/www/html/index.php
 sudo chown -R $(whoami):$(whoami) /var/www/html/index.php
 
-# change permissions of html folder and add gid bit:
-sudo chgrp -R www-data /var/www/html/git/
-sudo chmod g+s /var/www/html/git/
-sudo chmod g+w /var/www/html/git/
+# change permissions of git folder and add group id bit:
+sudo chown -R www-data:$(whoami) $GIT_FLDR
+sudo chmod 774 $GIT_FLDR
+sudo chmod g+s $GIT_FLDR
 
 # install python, python-pip and kafka-python
 sudo apt install python python-pip -y
 sudo pip install kafka-python
 
 echo "  for smart HTTP do:"
-echo "'htpasswd -c $GIT_FLDR/.htpasswd <user>'"
+echo "'htpasswd $GIT_FLDR/.htpasswd <user>'"
 echo "  to add new user to HTTP valid users"
 
 echo "Now you can start adding bare repositories to the webserver inside the $GIT_FLDR folder"
