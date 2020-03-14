@@ -32,6 +32,10 @@ def parse_args():
         '--test', help='Run script in "test" mode (only print serialized message)',
         default=False, action='store_true')
 
+    parser.add_argument(
+        '--channel', help='Kafka channel to send message on ',
+        default='MAIN_NODE')
+
     # add commands for each type of message
     # add new repo:
     parser_new = subparsers.add_parser(
@@ -67,6 +71,20 @@ def parse_args():
     parser_upd_pwds = subparsers.add_parser(
         'update_pwds', help='Send message that the .htpasswd file needs to be updated')
     parser_upd_pwds.set_defaults(command='UPDATE_PWDS')
+
+    # Get main server repos:
+    parser_get_repos = subparsers.add_parser(
+        'get_repos', help='Send message that the main server need to send replica all its repos')
+    parser_get_repos.set_defaults(command='GET_REPOS')
+
+    # Setup repos on replica server:
+    parser_setup_repos = subparsers.add_parser(
+        'setup_repos', help='Send message that the replica server need to all repos from main server')
+    parser_setup_repos.add_argument(
+        'ip', help='IP address of a source of the repository', type=ip)
+    parser_setup_repos.add_argument(
+        'repos', help='List of the repository on main server')
+    parser_setup_repos.set_defaults(command='SETUP_REPOS')
 
     return parser.parse_args()
 
@@ -118,8 +136,23 @@ def interpret_as_update_pwds(args):
         'type': args.command,
         'content': htpasswd_content
     }
+    return 
+
+def interpret_as_get_repos(args):
+    message = {
+        'type': args.command
+    }
+    
     return message
 
+
+def interpret_as_setup_repos(args):
+    message = {
+        'type': args.command,
+        'repos':args.repos
+    }
+    
+    return message
 
 def serialize_command(args):
     def wrap(s): return json.dumps(s)  # json based serializer
@@ -134,6 +167,10 @@ def serialize_command(args):
         return wrap(interpret_as_change_server(args))
     if args.command == 'UPDATE_PWDS':
         return wrap(interpret_as_update_pwds(args))
+    if args.command == 'GET_REPOS':
+        return wrap(interpret_as_update_pwds(args))
+    if args.command == 'SETUP_REPOS':
+        return wrap(interpret_as_setup_repos(args))    
     return None
 
 
@@ -156,7 +193,7 @@ def main():
 
     # MAIN_NODE is the topic, Change it to the topic you created on
     # kafka
-    producer.send('MAIN_NODE', value=data)
+    producer.send(args.channel, value=data)
 
     return
 
